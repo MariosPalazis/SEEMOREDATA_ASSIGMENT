@@ -74,23 +74,28 @@ export class SnowflakeService implements OnModuleInit, OnModuleDestroy {
     const limit = Number(process.env.SNOWFLAKE_TABLE_LIMIT || 0);
 
     const sql = `
-      SELECT
-        t.table_catalog   AS "DATABASE",
-        t.table_schema    AS "SCHEMA",
-        t.table_name      AS "TABLE_NAME",
-        t.comment         AS "TABLE_COMMENT",
-        c.column_name     AS "COLUMN_NAME",
-        c.data_type       AS "DATA_TYPE",
-        c.is_nullable     AS "IS_NULLABLE",
-        c.comment         AS "COLUMN_COMMENT",
-        c.ordinal_position AS "ORDINAL_POSITION"
-      FROM snowflake.account_usage.tables t
-      JOIN snowflake.account_usage.columns c
-        ON c.table_id = t.table_id
-      WHERE t.deleted IS NULL
-      ORDER BY t.table_catalog, t.table_schema, t.table_name, c.ordinal_position
-      ${limit > 0 ? `LIMIT ${limit}` : ''}
-    `;
+  SELECT
+    t.table_catalog    AS "DATABASE",
+    t.table_schema     AS "SCHEMA",
+    t.table_name       AS "TABLE_NAME",
+    t.comment          AS "TABLE_COMMENT",
+    c.column_name      AS "COLUMN_NAME",
+    c.data_type        AS "DATA_TYPE",
+    c.is_nullable      AS "IS_NULLABLE",
+    c.comment          AS "COLUMN_COMMENT",
+    c.ordinal_position AS "ORDINAL_POSITION"
+  FROM SNOWFLAKE_LEARNING_DB.INFORMATION_SCHEMA.TABLES t
+  JOIN SNOWFLAKE_LEARNING_DB.INFORMATION_SCHEMA.COLUMNS c
+    ON  c.table_catalog = t.table_catalog
+    AND c.table_schema  = t.table_schema
+    AND c.table_name    = t.table_name
+  WHERE t.table_type = 'BASE TABLE'
+  ORDER BY
+    t.table_catalog,
+    t.table_schema,
+    t.table_name,
+    c.ordinal_position
+`;
 
     const rows = await this.execute<{
       DATABASE: string;
@@ -112,7 +117,7 @@ export class SnowflakeService implements OnModuleInit, OnModuleDestroy {
       if (!tablesMap.has(key)) {
         tablesMap.set(key, {
           database: row.DATABASE,
-          schemaName: row.SCHEMA,    
+          schemaName: row.SCHEMA,
           name: row.TABLE_NAME,
           comment: row.TABLE_COMMENT,
           columns: [],

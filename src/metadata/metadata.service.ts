@@ -20,7 +20,7 @@ export class MetadataService {
   private computeSignature(table: TableMetadata): string {
     const payload = JSON.stringify({
       database: table.database,
-      schema: table.schemaName,
+      schemaName: table.schemaName,
       name: table.name,
       comment: table.comment || '',
       columns: table.columns.map((c) => ({
@@ -52,7 +52,7 @@ export class MetadataService {
         .findOne(
           {
             database: table.database,
-            schema: table.schemaName,
+            schemaName: table.schemaName,
             name: table.name,
           },
           { signature: 1 },
@@ -67,13 +67,13 @@ export class MetadataService {
       const result = await this.tableModel.updateOne(
         {
           database: table.database,
-          schema: table.schemaName,
+          schemaName: table.schemaName,
           name: table.name,
         },
         {
           $set: {
             database: table.database,
-            schema: table.schemaName,
+            schemaName: table.schemaName,
             name: table.name,
             comment: table.comment || null,
             columns: table.columns,
