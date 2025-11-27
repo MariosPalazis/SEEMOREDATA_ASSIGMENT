@@ -6,7 +6,7 @@ import configuration from './config/configuration';
 import { SnowflakeModule } from './snowflake/snowflake.module';
 import { MetadataModule } from './metadata/metadata.module';
 
-console.log('MongoDB URI:', process.env.MONGODB_URI,);
+// Root module that wires together Config, MongoDB, Snowflake, and metadata-related modules.
 @Module({
   imports: [
     ConfigModule.forRoot({

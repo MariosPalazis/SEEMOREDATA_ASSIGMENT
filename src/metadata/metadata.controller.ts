@@ -4,6 +4,7 @@ import { SyncResultDto } from './dto/sync-result.dto';
 
 @Controller('sync')
 export class MetadataController {
+  // Injects the MetadataService to expose sync operations through HTTP.
   constructor(private readonly metadataService: MetadataService) {}
 
   @Post()

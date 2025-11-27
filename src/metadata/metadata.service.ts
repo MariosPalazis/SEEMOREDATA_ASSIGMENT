@@ -11,12 +11,14 @@ import { SyncResultDto } from './dto/sync-result.dto';
 export class MetadataService {
   private readonly logger = new Logger(MetadataService.name);
 
+  // Injects the Snowflake service and MongoDB model used for metadata synchronization.
   constructor(
     private readonly snowflakeService: SnowflakeService,
     @InjectModel(TableMetadataDocument.name)
     private readonly tableModel: Model<TableMetadataDocument>,
   ) {}
 
+  // Produces a SHA-256 hash representing the table's structure for change detection.
   private computeSignature(table: TableMetadata): string {
     const payload = JSON.stringify({
       database: table.database,
@@ -35,6 +37,7 @@ export class MetadataService {
     return crypto.createHash('sha256').update(payload).digest('hex');
   }
 
+  // Fetches Snowflake metadata, compares it with Mongo entries, and inserts/updates documents as needed.
   async syncMetadata(): Promise<SyncResultDto> {
     this.logger.log('Starting metadata sync from Snowflake → MongoDB');
 

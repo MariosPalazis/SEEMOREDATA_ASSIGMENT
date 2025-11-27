@@ -47,6 +47,6 @@ export class TableMetadataDocument extends Document {
 export const TableMetadataSchema = SchemaFactory.createForClass(TableMetadataDocument);
 
 TableMetadataSchema.index(
-  { database: 1, schemaName: 1, name: 1 }, // ✅ updated index
+  { database: 1, schemaName: 1, name: 1 }, 
   { unique: true },
 );
